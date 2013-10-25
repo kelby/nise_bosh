@@ -61,12 +61,15 @@ fi
 # stemcell_builder/stages/bosh_monit/apply.sh
 monit_basename=monit-5.2.4
 (
-    cd /tmp
-    wget "http://mmonit.com/monit/dist/${monit_basename}.tar.gz" -O ${monit_basename}.tar.gz
-    tar xvzf ${monit_basename}.tar.gz
-    cd ${monit_basename}
-    ./configure --prefix=$bosh_dir --without-ssl
-    make -j4 && make install
+    mkdir /var/vcap/tmp
+    cd /var/vcap/tmp
+    if [ ! -d ${monit_basename} ]; then
+      wget "http://mmonit.com/monit/dist/${monit_basename}.tar.gz" -O ${monit_basename}.tar.gz
+      tar xvzf ${monit_basename}.tar.gz
+      cd ${monit_basename}
+      ./configure --prefix=$bosh_dir --without-ssl
+      make -j4 && make install
+    fi
 )
 mkdir -p $bosh_dir/etc
 cat <<EOF > /$bosh_dir/etc/monitrc
